@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BreakOrNot — Sprain or Fracture in 60 Seconds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#09090b;
+  --bg2:#111114;
+  --bg3:#18181c;
+  --border:#ffffff12;
+  --border2:#ffffff20;
+  --text:#f4f4f5;
+  --muted:#71717a;
+  --muted2:#52525b;
+  --accent:#00e5a0;
+  --accent2:#00b87a;
+  --red:#ff4d6d;
+  --amber:#fbbf24;
+  --radius:16px;
+  --radius-lg:24px;
+  --radius-xl:32px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden}
+h1,h2,h3,.syne{font-family:'Syne',sans-serif}
+
+/* ===== GRAIN OVERLAY ===== */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:.4}
+
+/* ===== NAV ===== */
+nav{position:sticky;top:0;z-index:100;padding:0 clamp(1.5rem,5vw,4rem);height:68px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(20px);background:rgba(9,9,11,.8)}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:grid;place-items:center;font-size:18px}
+.nav-logo-text{font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;letter-spacing:-.02em}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.875rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{background:var(--accent);color:#000;font-weight:600;font-size:.875rem;padding:.6rem 1.4rem;border-radius:100px;border:none;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.nav-cta:hover{background:#00ffb3;transform:translateY(-1px)}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:grid;place-items:center;padding:6rem clamp(1.5rem,5vw,4rem) 4rem;position:relative;overflow:hidden}
+.hero-glow{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(0,229,160,.12) 0%,transparent 70%);top:10%;left:50%;transform:translateX(-50%);pointer-events:none}
+.hero-grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,black 30%,transparent 100%)}
+.hero-inner{position:relative;z-index:1;max-width:900px;margin:0 auto;text-align:center}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.2);color:var(--accent);font-size:.75rem;font-weight:500;padding:.45rem 1.1rem;border-radius:100px;letter-spacing:.06em;margin-bottom:2rem;animation:fadeUp .6s ease both}
+.hero-tag-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+h1{font-size:clamp(3rem,8vw,6rem);font-weight:800;line-height:1.05;letter-spacing:-.04em;margin-bottom:1.5rem;animation:fadeUp .7s .1s ease both}
+h1 em{font-style:normal;color:var(--accent)}
+.hero-sub{font-size:clamp(1rem,2vw,1.25rem);color:var(--muted);max-width:520px;margin:0 auto 3rem;font-weight:300;animation:fadeUp .7s .2s ease both}
+.hero-actions{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;animation:fadeUp .7s .3s ease both}
+.btn-primary{background:var(--accent);color:#000;font-weight:700;font-size:1rem;padding:.9rem 2.4rem;border-radius:100px;border:none;cursor:pointer;font-family:'Syne',sans-serif;letter-spacing:-.01em;transition:all .25s;display:flex;align-items:center;gap:.6rem}
+.btn-primary:hover{background:#00ffb3;transform:translateY(-2px);box-shadow:0 0 40px rgba(0,229,160,.3)}
+.btn-ghost{background:transparent;color:var(--text);font-weight:500;font-size:1rem;padding:.9rem 2rem;border-radius:100px;border:1px solid var(--border2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.btn-ghost:hover{border-color:var(--border2);background:rgba(255,255,255,.04)}
+.hero-stats{display:flex;align-items:center;justify-content:center;gap:2.5rem;margin-top:4rem;padding-top:2.5rem;border-top:1px solid var(--border);animation:fadeUp .7s .4s ease both;flex-wrap:wrap}
+.stat-item{text-align:center}
+.stat-num{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:700;color:var(--text)}
+.stat-label{font-size:.8rem;color:var(--muted);margin-top:2px}
+
+/* ===== SCROLL INDICATOR ===== */
+.scroll-ind{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;color:var(--muted2);font-size:.75rem;letter-spacing:.08em;animation:fadeUp .7s .8s ease both}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scrollLine 2s ease infinite}
+@keyframes scrollLine{0%{opacity:0;transform:scaleY(0);transform-origin:top}50%{opacity:1}100%{opacity:0;transform:scaleY(1);transform-origin:top}}
+
+/* ===== HOW IT WORKS ===== */
+.section{padding:6rem clamp(1.5rem,5vw,4rem)}
+.section-label{font-size:.7rem;font-weight:600;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin-bottom:1rem}
+.section-title{font-size:clamp(1.8rem,4vw,3rem);font-weight:700;letter-spacing:-.03em;line-height:1.15;margin-bottom:1rem}
+.section-sub{color:var(--muted);max-width:480px;font-weight:300}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-top:4rem}
+.step{background:var(--bg);padding:2.5rem;transition:background .3s}
+.step:hover{background:var(--bg2)}
+.step-num{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:rgba(0,229,160,.15);line-height:1;margin-bottom:1.5rem}
+.step-icon{font-size:1.8rem;margin-bottom:1rem}
+.step h3{font-size:1.1rem;font-weight:600;margin-bottom:.5rem}
+.step p{font-size:.875rem;color:var(--muted);line-height:1.6}
+
+/* ===== DIAGNOSIS TOOL ===== */
+.tool-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.tool-inner{max-width:960px;margin:0 auto}
+.tool-header{text-align:center;margin-bottom:3.5rem}
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden}
+@media(max-width:700px){.tool-grid{grid-template-columns:1fr}}
+.tool-pane{background:var(--bg);padding:2.5rem}
+.tool-pane-label{font-size:.7rem;font-weight:600;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:2rem;display:flex;align-items:center;gap:.5rem}
+.tool-pane-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Form elements */
+.field{margin-bottom:1.75rem}
+.field label{display:block;font-size:.8rem;font-weight:500;color:var(--muted);letter-spacing:.03em;margin-bottom:.75rem;text-transform:uppercase}
+.btn-group{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+.toggle-btn{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.75rem .5rem;font-size:.8rem;color:var(--muted);cursor:pointer;transition:all .2s;text-align:center;font-family:'DM Sans',sans-serif}
+.toggle-btn:hover{border-color:var(--border2);color:var(--text)}
+.toggle-btn.active{background:rgba(0,229,160,.1);border-color:var(--accent);color:var(--accent);font-weight:500}
+.custom-select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem;color:var(--text);font-size:.9rem;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;transition:border-color .2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2371717a' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;background-color:var(--bg3)}
+.custom-select:focus{border-color:var(--accent)}
+.custom-select option{background:var(--bg3)}
+.pain-container{position:relative}
+.pain-display{font-family:'Syne',sans-serif;font-size:3.5rem;font-weight:800;text-align:center;color:var(--text);line-height:1;margin-bottom:.75rem;transition:color .3s}
+.pain-desc{text-align:center;font-size:.8rem;color:var(--muted);margin-bottom:1rem}
+input[type=range]{width:100%;-webkit-appearance:none;height:4px;border-radius:100px;background:var(--bg3);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;transition:transform .2s;box-shadow:0 0 12px rgba(0,229,160,.4)}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
+.checkboxes{display:flex;flex-wrap:wrap;gap:.5rem}
+.check-pill{display:flex;align-items:center;gap:.5rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.55rem 1rem;font-size:.85rem;cursor:pointer;transition:all .2s;user-select:none;color:var(--muted)}
+.check-pill:hover{border-color:var(--border2);color:var(--text)}
+.check-pill.active{background:rgba(0,229,160,.08);border-color:var(--accent);color:var(--accent)}
+.check-pill input{display:none}
+.check-pill-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);transition:background .2s}
+.check-pill.active .check-pill-dot{background:var(--accent)}
+
+/* Upload */
+.upload-area{border:1.5px dashed var(--border2);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:all .3s;background:var(--bg3)}
+.upload-area:hover{border-color:var(--accent);background:rgba(0,229,160,.04)}
+.upload-icon{font-size:1.8rem;margin-bottom:.75rem;opacity:.5}
+.upload-text{font-size:.85rem;color:var(--muted)}
+.upload-text strong{color:var(--accent)}
+#photoPreview{margin-top:1rem;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+#photoPreview img{width:100%;display:block;max-height:200px;object-fit:cover}
+
+/* Analyze button */
+.analyze-btn{width:100%;background:var(--accent);color:#000;font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;letter-spacing:-.01em;padding:1rem;border-radius:12px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.75rem;transition:all .3s;margin-top:2rem}
+.analyze-btn:hover{background:#00ffb3;transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,229,160,.3)}
+.analyze-btn svg{transition:transform .3s}
+.analyze-btn:hover svg{transform:translateX(4px)}
+
+/* ===== RESULT PANE ===== */
+.result-pane{background:var(--bg);padding:2.5rem;display:flex;flex-direction:column}
+.result-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:1rem;color:var(--muted2)}
+.result-empty-icon{font-size:3rem;opacity:.3}
+.result-empty p{font-size:.875rem;max-width:200px;line-height:1.5}
+.result-content{display:none;flex-direction:column;height:100%}
+.result-content.visible{display:flex}
+.result-verdict{margin-bottom:1.5rem}
+.verdict-label{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+.verdict-text{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;line-height:1.1;letter-spacing:-.03em}
+.verdict-confidence{font-size:.9rem;color:var(--muted);margin-top:.3rem}
+.verdict-confidence span{font-weight:600}
+.risk-meter{margin-bottom:2rem}
+.risk-track{height:6px;background:var(--bg3);border-radius:100px;overflow:hidden;margin-bottom:.5rem}
+.risk-fill{height:100%;border-radius:100px;transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
+.risk-labels{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted2)}
+.action-card{flex:1;border-radius:14px;padding:1.5rem;margin-bottom:1.5rem}
+.action-card.green{background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.2)}
+.action-card.red{background:rgba(255,77,109,.07);border:1px solid rgba(255,77,109,.2)}
+.action-card.amber{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2)}
+.action-title{font-weight:600;font-size:.95rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.action-list{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.action-list li{font-size:.85rem;color:var(--muted);display:flex;align-items:flex-start;gap:.5rem;line-height:1.4}
+.action-list li::before{content:'→';color:inherit;opacity:.6;flex-shrink:0;margin-top:.05rem}
+.result-cta{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:auto}
+.cta-doctor{background:var(--text);color:#000;font-weight:600;font-size:.85rem;padding:.85rem;border-radius:10px;border:none;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
+.cta-doctor:hover{background:#e4e4e7}
+.cta-retry{background:transparent;color:var(--muted);font-size:.85rem;padding:.85rem;border-radius:10px;border:1px solid var(--border);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.cta-retry:hover{border-color:var(--border2);color:var(--text)}
+.disclaimer-small{font-size:.72rem;color:var(--muted2);text-align:center;margin-top:1rem;line-height:1.5}
+
+/* ===== DOCTOR SECTION ===== */
+.doctor-section{padding:6rem clamp(1.5rem,5vw,4rem)}
+.doctor-card{max-width:880px;margin:4rem auto 0;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;display:grid;grid-template-columns:1fr 1fr}
+@media(max-width:640px){.doctor-card{grid-template-columns:1fr}}
+.doctor-info{padding:3rem}
+.doctor-info h3{font-size:clamp(1.5rem,3vw,2rem);font-weight:700;letter-spacing:-.03em;margin-bottom:.75rem;line-height:1.2}
+.doctor-info p{color:var(--muted);font-size:.9rem;line-height:1.6;margin-bottom:2rem;font-weight:300}
+.connect-btn{background:var(--accent);color:#000;font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;padding:.9rem 2rem;border-radius:100px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;transition:all .25s}
+.connect-btn:hover{background:#00ffb3;transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,229,160,.3)}
+.doctor-visual{background:var(--bg3);padding:2.5rem;display:flex;flex-direction:column;justify-content:center;gap:1.25rem;border-left:1px solid var(--border)}
+.doc-feature{display:flex;align-items:center;gap:1rem;padding:1rem;background:var(--bg);border:1px solid var(--border);border-radius:12px}
+.doc-feature-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:1.1rem;flex-shrink:0}
+.doc-feature-icon.green{background:rgba(0,229,160,.1)}
+.doc-feature-icon.blue{background:rgba(59,130,246,.1)}
+.doc-feature-icon.amber{background:rgba(251,191,36,.1)}
+.doc-feature h4{font-size:.875rem;font-weight:500;margin-bottom:.15rem}
+.doc-feature p{font-size:.775rem;color:var(--muted)}
+
+/* ===== FOOTER ===== */
+footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem);display:flex;justify-content:space-between;align-items:center;flex-wrap:gap}
+.footer-brand{display:flex;align-items:center;gap:.75rem}
+.footer-brand span{font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem}
+.footer-note{font-size:.78rem;color:var(--muted2);max-width:380px;line-height:1.5;text-align:right}
+@media(max-width:600px){footer{flex-direction:column;gap:1.5rem;text-align:center}.footer-note{text-align:center}}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-xl);padding:2.5rem;max-width:440px;width:100%;transform:translateY(20px) scale(.97);transition:all .3s}
+.modal-overlay.open .modal{transform:none}
+.modal h3{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:.5rem}
+.modal p{color:var(--muted);font-size:.9rem;line-height:1.6;margin-bottom:2rem}
+.modal-doc{display:flex;align-items:center;gap:1rem;padding:1.25rem;background:var(--bg);border:1px solid var(--border);border-radius:14px;margin-bottom:2rem}
+.modal-doc-avatar{width:52px;height:52px;border-radius:12px;background:var(--bg3);overflow:hidden;flex-shrink:0;display:grid;place-items:center;font-size:1.4rem}
+.modal-doc h4{font-weight:600;font-size:.95rem}
+.modal-doc p{font-size:.8rem;color:var(--accent);margin:0}
+.modal-actions{display:grid;gap:.75rem}
+.modal-btn-primary{background:var(--accent);color:#000;font-weight:700;padding:.9rem;border-radius:10px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:.95rem;transition:all .2s;width:100%}
+.modal-btn-primary:hover{background:#00ffb3}
+.modal-close{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.8rem;border-radius:10px;cursor:pointer;font-size:.875rem;font-family:'DM Sans',sans-serif;width:100%;transition:all .2s}
+.modal-close:hover{border-color:var(--border2);color:var(--text)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">🦴</div>
+    <span class="nav-logo-text">BreakOrNot</span>
+  </div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#check">Diagnosis</a>
+    <a href="#doctors">Doctors</a>
+    <button class="nav-cta" onclick="document.getElementById('check').scrollIntoView({behavior:'smooth'})">Start Free Check</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-tag">
+      <span class="hero-tag-dot"></span>
+      HEALTHCARE · AI
+    </div>
+    <h1>Stop guessing.<br><em>Know</em> in 60 seconds.</h1>
+    <p class="hero-sub">Distinguish a sprain from a fracture with AI — no hospital, no X-ray, no ₹5,000 bill just to hear "it's fine."</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('check').scrollIntoView({behavior:'smooth'})">
+        Check my injury
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">How it works</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">60s</div><div class="stat-label">to get a result</div></div>
+      <div class="stat-item"><div class="stat-num">₹0</div><div class="stat-label">always free</div></div>
+      <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">quick questions</div></div>
+      <div class="stat-item"><div class="stat-num">98%*</div><div class="stat-label">reported accuracy</div></div>
+    </div>
+  </div>
+  <div class="scroll-ind">
+    <div class="scroll-line"></div>
+    SCROLL
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="section reveal">
+  <div style="max-width:960px;margin:0 auto">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Three steps to clarity</h2>
+    <p class="section-sub">No medical knowledge needed. Answer honestly, get your result.</p>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-icon">💬</div>
+        <h3>Describe what happened</h3>
+        <p>Tell us the mechanism, location, pain level, and what you can see. Takes under a minute.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-icon">🤖</div>
+        <h3>AI analyses your symptoms</h3>
+        <p>Our model cross-references clinical indicators used by triage nurses to estimate fracture probability.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-icon">📋</div>
+        <h3>Get your action plan</h3>
+        <p>Clear next steps — from RICE at home to "go to A&E now." Plus free doctor consult if needed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIAGNOSIS TOOL -->
+<section id="check" class="section tool-section reveal">
+  <div class="tool-inner">
+    <div class="tool-header">
+      <div class="section-label" style="text-align:center">Diagnosis tool</div>
+      <h2 class="section-title" style="text-align:center">Tell us about your injury</h2>
+    </div>
+    <div class="tool-grid">
+      <!-- LEFT: FORM -->
+      <div class="tool-pane">
+        <div class="tool-pane-label">Your symptoms</div>
+        <form id="diagnosisForm" onsubmit="analyzeInjury(event)">
+
+          <div class="field">
+            <label>How did it happen?</label>
+            <div class="btn-group" id="mechanism-group">
+              <button type="button" class="toggle-btn" onclick="selectToggle('mechanism-group',this,'twist')">Twist / Roll</button>
+              <button type="button" class="toggle-btn" onclick="selectToggle('mechanism-group',this,'impact')">Direct impact</button>
+              <button type="button" class="toggle-btn" onclick="selectToggle('mechanism-group',this,'snap')">Heard a snap</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Which area is affected?</label>
+            <select id="bodyPart" class="custom-select">
+              <option value="">Select body part</option>
+              <option value="ankle">Ankle</option>
+              <option value="wrist">Wrist</option>
+              <option value="knee">Knee</option>
+              <option value="finger">Finger / Toe</option>
+              <option value="foot">Foot</option>
+              <option value="elbow">Elbow</option>
+              <option value="shoulder">Shoulder</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Pain level</label>
+            <div class="pain-container">
+              <div class="pain-display" id="painDisplay">6</div>
+              <div class="pain-desc" id="painDesc">Moderate — manageable with focus</div>
+              <input type="range" id="painSlider" min="1" max="10" value="6" oninput="updatePain(this.value)">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Can you bear weight on it?</label>
+            <select id="weight" class="custom-select">
+              <option value="0">Yes, fully</option>
+              <option value="2">Yes, but painful</option>
+              <option value="5">No, impossible</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Visible signs (select all that apply)</label>
+            <div class="checkboxes">
+              <label class="check-pill" onclick="togglePill(this)">
+                <input type="checkbox" id="swelling" value="3">
+                <div class="check-pill-dot"></div>
+                Swelling
+              </label>
+              <label class="check-pill" onclick="togglePill(this)">
+                <input type="checkbox" id="bruise" value="2">
+                <div class="check-pill-dot"></div>
+                Bruising
+              </label>
+              <label class="check-pill" onclick="togglePill(this)">
+                <input type="checkbox" id="deformity" value="8">
+                <div class="check-pill-dot"></div>
+                Looks deformed
+              </label>
+              <label class="check-pill" onclick="togglePill(this)">
+                <input type="checkbox" id="numb" value="2">
+                <div class="check-pill-dot"></div>
+                Numbness / tingling
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Photo of the injury <span style="opacity:.4;font-size:.75em;text-transform:none;font-weight:400;letter-spacing:0">(optional)</span></label>
+            <div class="upload-area" onclick="document.getElementById('photoInput').click()">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text"><strong>Click to upload</strong> or drag & drop<br><span style="font-size:.75rem;opacity:.6">Helps our AI detect swelling patterns</span></div>
+              <input type="file" id="photoInput" accept="image/*" class="hidden" style="display:none" onchange="previewPhoto(this)">
+            </div>
+            <div id="photoPreview"></div>
+          </div>
+
+          <button type="submit" class="analyze-btn">
+            Analyse with AI
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M9 3l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </form>
+      </div>
+
+      <!-- RIGHT: RESULT -->
+      <div class="result-pane" id="resultPane">
+        <div class="tool-pane-label">Your result</div>
+        <div class="result-empty" id="resultEmpty">
+          <div class="result-empty-icon">🩻</div>
+          <p>Complete the form and hit analyse to see your result here.</p>
+        </div>
+        <div class="result-content" id="resultContent">
+          <div class="result-verdict">
+            <div class="verdict-label">Assessment</div>
+            <div class="verdict-text" id="verdictText">—</div>
+            <div class="verdict-confidence" id="verdictConf"></div>
+          </div>
+          <div class="risk-meter">
+            <div class="risk-track"><div class="risk-fill" id="riskFill" style="width:0%"></div></div>
+            <div class="risk-labels"><span>Low risk</span><span>High risk</span></div>
+          </div>
+          <div class="action-card" id="actionCard">
+            <div class="action-title" id="actionTitle"></div>
+            <ul class="action-list" id="actionList"></ul>
+          </div>
+          <div class="result-cta">
+            <button class="cta-doctor" onclick="openDoctorModal()">📹 Talk to doctor</button>
+            <button class="cta-retry" onclick="resetDiagnosis()">Try again</button>
+          </div>
+          <p class="disclaimer-small">*Not a medical diagnosis. For emergencies, call 112 or go to A&E immediately.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOCTOR -->
+<section id="doctors" class="doctor-section reveal">
+  <div style="max-width:880px;margin:0 auto;text-align:center">
+    <div class="section-label">Free consultations</div>
+    <h2 class="section-title">Still unsure? Talk to a real doctor.</h2>
+    <p class="section-sub" style="margin:0 auto">Free video consultations with orthopedic specialists. No waiting room, no bill.</p>
+  </div>
+  <div class="doctor-card">
+    <div class="doctor-info">
+      <h3>Skip the ₹800 clinic visit for "it's fine."</h3>
+      <p>Our network of orthopedic doctors reviews your AI result, looks at your photo, and tells you exactly what to do — for free. Because not knowing is the worst feeling.</p>
+      <button class="connect-btn" onclick="openDoctorModal()">
+        Connect now — it's free
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="doctor-visual">
+      <div class="doc-feature">
+        <div class="doc-feature-icon green">📹</div>
+        <div><h4>Video call in minutes</h4><p>Average wait under 4 minutes</p></div>
+      </div>
+      <div class="doc-feature">
+        <div class="doc-feature-icon blue">🖼️</div>
+        <div><h4>Share your photo</h4><p>Doctor sees exactly what you see</p></div>
+      </div>
+      <div class="doc-feature">
+        <div class="doc-feature-icon amber">📝</div>
+        <div><h4>Get a written summary</h4><p>Shareable report sent to your phone</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <div class="nav-logo-icon" style="width:30px;height:30px;font-size:14px">🦴</div>
+    <span>BreakOrNot</span>
+  </div>
+  <p class="footer-note">Prototype. Not a substitute for professional medical care. In an emergency, call 112. Made with ❤️ .</p>
+</footer>
+
+<!-- DOCTOR MODAL -->
+<div class="modal-overlay" id="doctorModal" onclick="closeDoctorModal(event)">
+  <div class="modal">
+    <h3>Free doctor consultation</h3>
+    <p>An orthopedic specialist will review your assessment and photo in real time.</p>
+    <div class="modal-doc">
+      <div class="modal-doc-avatar">👨‍⚕️</div>
+      <div>
+        <h4>Dr. Alex Kumar</h4>
+        <p>Orthopedic Specialist · Available now</p>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn-primary" onclick="alert('🎉 Demo: In the real product, this would start a live video call with the doctor. Your AI result would be shared automatically.')">Start video call</button>
+      <button class="modal-close" onclick="closeDoctorModal()">Maybe later</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== State =====
+const mechState = {val: null};
+const painDescs = ['','Barely noticeable','Mild ache','Noticeable','Uncomfortable','Moderate — manageable with focus','Distracting pain','Significant, hard to ignore','Severe, affecting function','Intense — near limit','Worst imaginable pain'];
+
+// ===== Interactions =====
+function selectToggle(groupId, btn, val) {
+  document.querySelectorAll(`#${groupId} .toggle-btn`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  btn.dataset.val = val;
+  mechState.val = val;
+}
+
+function togglePill(label) {
+  label.classList.toggle('active');
+  const cb = label.querySelector('input[type=checkbox]');
+  cb.checked = !cb.checked;
+}
+
+function updatePain(val) {
+  document.getElementById('painDisplay').textContent = val;
+  document.getElementById('painDesc').textContent = painDescs[parseInt(val)];
+  const pct = (val - 1) / 9;
+  const r = Math.round(255 * Math.min(1, pct * 2));
+  const g = Math.round(229 * Math.max(0, 1 - (pct - .5) * 2));
+  document.getElementById('painDisplay').style.color = `rgb(${r},${g},60)`;
+}
+
+function previewPhoto(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('photoPreview').innerHTML = `<img src="${e.target.result}">`;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// ===== Analysis =====
+function analyzeInjury(e) {
+  e.preventDefault();
+  const pain = parseInt(document.getElementById('painSlider').value);
+  const weight = parseInt(document.getElementById('weight').value);
+  const swelling = document.getElementById('swelling').checked ? 3 : 0;
+  const bruise = document.getElementById('bruise').checked ? 2 : 0;
+  const deformity = document.getElementById('deformity').checked ? 10 : 0;
+  const numb = document.getElementById('numb').checked ? 2 : 0;
+  const mechScore = mechState.val === 'snap' ? 4 : mechState.val === 'impact' ? 2 : mechState.val === 'twist' ? 1 : 0;
+
+  let score = weight + pain + swelling + bruise + deformity + numb + mechScore;
+  if (pain >= 8) score += 3;
+  if (deformity) score += 5;
+
+  const fracturePct = Math.min(95, Math.max(8, Math.round(score * 2.2)));
+
+  showResult(fracturePct, pain, deformity > 0);
+}
+
+function showResult(fracturePct, pain, deformed) {
+  document.getElementById('resultEmpty').style.display = 'none';
+  const rc = document.getElementById('resultContent');
+  rc.classList.add('visible');
+
+  let level, verdictText, cardClass, actionTitle, actions, riskColor;
+
+  if (fracturePct >= 65 || deformed) {
+    level = 'high'; verdictText = 'Likely fracture'; cardClass = 'red';
+    riskColor = '#ff4d6d';
+    actionTitle = '🚨 Seek care today';
+    actions = [
+      'Do not put weight on the injured area',
+      'Immobilise with a splint or firm bandage',
+      'Apply ice wrapped in cloth (20 min on, 20 off)',
+      'Go to A&E or urgent care — X-ray needed within 2–4 hours',
+      'Do not eat or drink in case surgery is required'
+    ];
+  } else if (fracturePct >= 40) {
+    level = 'mid'; verdictText = 'Possibly fractured'; cardClass = 'amber';
+    riskColor = '#fbbf24';
+    actionTitle = '⚠️ See a doctor within 24 hours';
+    actions = [
+      'Avoid putting full weight on the area',
+      'Apply RICE: Rest, Ice, Compression, Elevation',
+      'Take OTC pain relief (ibuprofen reduces swelling)',
+      'Visit walk-in clinic or urgent care for X-ray',
+      'Watch for worsening swelling, numbness, or colour change'
+    ];
+  } else {
+    level = 'low'; verdictText = 'Likely a sprain'; cardClass = 'green';
+    riskColor = '#00e5a0';
+    actionTitle = '✅ Home care recommended';
+    actions = [
+      'Rest — avoid putting stress on the area for 48–72 hours',
+      'Ice — 20 minutes on, 20 off for the first 2 days',
+      'Compression — wrap with a bandage, not too tight',
+      'Elevate — keep the limb above heart level when resting',
+      'See a doctor if symptoms worsen or don\'t improve in 3–5 days'
+    ];
+  }
+
+  document.getElementById('verdictText').textContent = verdictText;
+  document.getElementById('verdictConf').innerHTML = `Fracture probability <span>${fracturePct}%</span>`;
+  const fill = document.getElementById('riskFill');
+  fill.style.background = riskColor;
+  setTimeout(() => fill.style.width = fracturePct + '%', 50);
+
+  const card = document.getElementById('actionCard');
+  card.className = `action-card ${cardClass}`;
+  document.getElementById('actionTitle').textContent = actionTitle;
+  document.getElementById('actionList').innerHTML = actions.map(a => `<li>${a}</li>`).join('');
+
+  document.getElementById('resultPane').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function resetDiagnosis() {
+  document.getElementById('diagnosisForm').reset();
+  document.getElementById('photoPreview').innerHTML = '';
+  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.check-pill').forEach(p => p.classList.remove('active'));
+  mechState.val = null;
+  document.getElementById('painDisplay').textContent = '6';
+  document.getElementById('painDesc').textContent = painDescs[6];
+  document.getElementById('painDisplay').style.color = '';
+  document.getElementById('resultEmpty').style.display = '';
+  document.getElementById('resultContent').classList.remove('visible');
+  document.getElementById('riskFill').style.width = '0%';
+}
+
+// ===== Modal =====
+function openDoctorModal() {
+  document.getElementById('doctorModal').classList.add('open');
+}
+function closeDoctorModal(e) {
+  if (!e || e.target === document.getElementById('doctorModal')) {
+    document.getElementById('doctorModal').classList.remove('open');
+  }
+}
+
+// ===== Reveal on scroll =====
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, {threshold: 0.1});
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// init pain
+updatePain(6);
+</script>
+</body>
+</html>
