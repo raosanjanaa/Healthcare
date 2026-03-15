@@ -1,6 +1,4 @@
-﻿# BreakOrNot 
- Try here : https://breakornot.vercel.app/
- 🦴 BreakOrNot
+﻿#  BreakOrNot
 > \*\*AI-powered sprain vs. fracture assessment in 60 seconds.\*\*  
 > No hospital. No X-ray. No ₹5,000 bill.
 ![BreakOrNot Hero](https://img.shields.io/badge/status-prototype-yellow) ![License](https://img.shields.io/badge/license-MIT-green) ![Tech](https://img.shields.io/badge/stack-HTML%20%2F%20CSS%20%2F%20JS-blue) 
@@ -20,7 +18,7 @@ Photo upload — FileReader API preview (CV analysis in future version)
 Free doctor consultation — connect with an orthopedic specialist via video call
 Zero dependencies — pure HTML, CSS, JS. No frameworks, no installs
 Fully responsive — works on any device
----
+
 🛠️ Tech Stack
 Layer	Technology
 Frontend	Vanilla HTML5, CSS3, JavaScript (ES6+)
@@ -32,34 +30,14 @@ Image handling	`FileReader` API
 Hosting	Static — deployable anywhere
 Why no framework?
 This is a hackathon prototype. Vanilla JS keeps it zero-dependency, instantly deployable as a single `.html` file, and fast to iterate. A production version would use React + a real ML backend.
----
+
 🧠 Scoring Algorithm
 The fracture probability score is calculated from weighted clinical indicators:
 ```
 score = mechanism + pain\_bonus + weight\_bearing + swelling + bruising + deformity + numbness
 
 fracture\_probability = min(95, max(8, score × 2.2))
-```
-Input	Weight
-Heard a snap/crack	+4
-Direct impact	+2
-Twist / roll	+1
-Cannot bear weight	+5
-Painful weight-bearing	+2
-Pain ≥ 8/10	+3 bonus
-Severe swelling	+3
-Bruising	+2
-Visible deformity	+10 + bonus
-Numbness / tingling	+2
-Result tiers:
-`< 40%` → Likely Sprain — home RICE care
-`40–64%` → Possibly Fractured — see a doctor within 24h
-`≥ 65%` → Likely Fracture — seek immediate care
-> ⚠️ This is a heuristic model, not a trained ML model. It is not a medical diagnosis.
----
-🚀 Getting Started
-No installation required. Just open the file.
-```bash
+
 # Clone the repo
 git clone https://github.com/yourusername/breakornot.git
 
@@ -70,34 +48,23 @@ open index.html
 ```
 Or deploy instantly:
 https://breakornot.vercel.app/
----
+
 📁 Project Structure
 ```
 breakornot/
 ├── index.html          # Entire app — single file, self-contained
 ├── README.md           # You are here
 ```
----
-🗺️ Roadmap
-This is a v1 prototype. Here's what a production version would include:
-[ ] Real ML model — trained on X-ray + symptom datasets (e.g. MURA dataset)
-[ ] Computer vision — analyse uploaded photo for swelling/bruising severity
-[ ] Razorpay integration — ₹0 → paid doctor consultations payment flow
-[ ] WhatsApp API — deliver assessment report to user's phone
-[ ] GPS clinic finder — nearest urgent care / A&E based on location
-[ ] React Native app — iOS + Android
-[ ] Multi-language support — Hindi, Malayalam, Tamil
-[ ] Doctor dashboard — for reviewing patient assessments before calls
----
+
 ⚠️ Disclaimer
 BreakOrNot is a prototype and is not a medical device or substitute for professional medical care.
 Do not rely on this tool for emergency decisions
 In an emergency, call 112 or go to your nearest A&E
 Always consult a qualified healthcare professional for injuries
----
+
 📄 License
 MIT — free to use, modify, and distribute.
----
+
 <div align="center">
   Made with ❤️.
 </div>
