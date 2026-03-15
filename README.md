@@ -37,14 +37,6 @@ The fracture probability score is calculated from weighted clinical indicators:
 score = mechanism + pain\_bonus + weight\_bearing + swelling + bruising + deformity + numbness
 
 fracture\_probability = min(95, max(8, score × 2.2))
-
-# Clone the repo
-git clone https://github.com/yourusername/breakornot.git
-
-cd breakornot
-
-# Open directly in browser
-open index.html
 ```
 Or deploy instantly:
 https://breakornot.vercel.app/
